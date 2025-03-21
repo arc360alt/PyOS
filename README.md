@@ -1,4 +1,4 @@
-# PyOS
+# PyOS (BETA, PLEASE REPORT ISSUES)
 A Fake gaming console made in python.
 
 ## Requierments:
