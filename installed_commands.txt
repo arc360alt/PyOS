@@ -1,0 +1,15 @@
+help
+hello
+about
+exit
+clear
+time
+pyfetch
+ollama
+echo
+tetris
+image
+flappybird
+calculator
+snake
+pyinstall
