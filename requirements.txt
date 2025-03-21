@@ -1,0 +1,17 @@
+certifi==2025.1.31
+charset-normalizer==3.4.1
+docopt==0.6.2
+evdev==1.9.1
+idna==3.10
+keyboard==0.13.5
+pexpect==4.9.0
+pillow==11.1.0
+pipreqs==0.4.13
+psutil==7.0.0
+ptyprocess==0.7.0
+pynput==1.8.1
+python-xlib==0.33
+requests==2.32.3
+six==1.17.0
+urllib3==2.3.0
+yarg==0.1.10
