@@ -16,3 +16,4 @@ urllib3==2.3.0
 yarg==0.1.10
 pyreadline3==3.5.4
 hid==1.0.7
+windows-curses==2.4.1
