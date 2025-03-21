@@ -6,10 +6,10 @@ Git
 Python (3.13 or newer)
 
 Installation (Linux and Maybe Windows)
-git clone https://github.com/arc360alt/PyOS.git
+- ```git clone https://github.com/arc360alt/PyOS.git```
 
-cd PyOS
+- ```cd PyOS```
 
-pip install -r requirements. txt 
+- ```pip install -r requirements. txt```
 
-python os.py
+- ```python os.py```
