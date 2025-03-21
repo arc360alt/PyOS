@@ -116,7 +116,7 @@ def install_script(script_name):
                 os.makedirs(install_dir)
             except OSError as e:
                 print(f"Error creating installation directory: {e}")
-                return
+                return None
 
         install_path = os.path.join(install_dir, command_name)
 
@@ -124,51 +124,42 @@ def install_script(script_name):
         with open(install_path, "w") as wrapper_script:
             wrapper_script.write(f"#!/usr/bin/env python3\n")
             wrapper_script.write(f"import os\n")
-            wrapper_script.write(f"os.chdir(r'{os.getcwd()}')\n") #change dir
+            wrapper_script.write(f"os.chdir(r'{os.getcwd()}')\n")  # change dir
             wrapper_script.write(f"import {command_name}\n")
 
         os.chmod(install_path, 0o755)  # execute ts
 
-        if os.name == 'posix':
-            # ... (POSIX installation) ...
-            print(f"Script '{script_name}' installed as command '{command_name}' in {install_dir}")
-        elif os.name == 'nt':
-            # ... (Windows installation) ...
-            print(f"Script '{script_name}' installed as command '{command_name}' in {install_dir}")
-        else:
-            print("Error: Unsupported operating system.")
-            return None #return nothing on error
-
-        return command_name  # Return the command name
-
         print(f"Script '{script_name}' installed as command '{command_name}' in {install_dir}")
+        return command_name  # Return command_name after successful installation
 
     elif os.name == 'nt':  # Windows
-        install_dir = os.path.join(os.path.expanduser("~"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs") #add to start menu
-        install_path = os.path.join(install_dir, f"{command_name}.bat") #create bat file
+        install_dir = os.path.join(os.path.expanduser("~"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs")  # add to start menu
+        install_path = os.path.join(install_dir, f"{command_name}.bat")  # create bat file
         with open(install_path, "w") as bat_file:
             bat_file.write(f"@echo off\n")
-            bat_file.write(f"python \"{os.path.join(os.getcwd(),script_name)}\" %*\n") #run python script
+            bat_file.write(f"python \"{os.path.join(os.getcwd(), script_name)}\" %*\n")  # run python script
 
         print(f"Script '{script_name}' installed as command '{command_name}' in {install_dir}")
+        return command_name  # Return command_name after successful installation
 
     else:
         print("Error: Unsupported operating system.")
+        return None  # return nothing on error
 
 def load_installed_commands():
-    """Loads installed commands from a file."""
     try:
         with open("installed_commands.txt", "r") as f:
             return [line.strip() for line in f]
     except FileNotFoundError:
-        return ["help", "hello", "about", "exit", "clear", "time", "pyfetch", "ollama", "echo", "tetris", "image", "flappybird", "calculator", "snake", "pyinstall"]
+        default_commands = ["help", "hello", "about", "exit", "clear", "time", "pyfetch", "ollama", "echo", "tetris", "image", "flappybird", "calculator", "snake", "pyinstall"]
+        save_installed_commands(default_commands)
+        return default_commands
 
 def save_installed_commands(commands):
     """Saves installed commands to a file."""
     with open("installed_commands.txt", "w") as f:
         for command in commands:
             f.write(command + "\n")
-
 
 def fake_os():
     """Simulates a fake terminal-based OS with command history."""
