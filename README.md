@@ -1,11 +1,12 @@
 # PyOS
 A Fake gaming console made in python.
 
-Requierments:
-Git
-Python (3.13 or newer)
+## Requierments:
+- Git
+- Python (3.13 or newer)
+- Pip (3.13)
 
-Installation (Linux and Maybe Windows)
+## Installation (Linux and Maybe Windows)
 - ```git clone https://github.com/arc360alt/PyOS.git```
 
 - ```cd PyOS```
