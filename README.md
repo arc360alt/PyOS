@@ -21,7 +21,7 @@ A Fake gaming console made in python.
 ## Compatibility
 - Windows: ❗You need to run pip install -r requierments-win.txt insted of pip install -r requirements.txt
 - Linux: ✅ Coded on linux, works perfectly
-- MacOS: ❓Untested, trying to test as of march 21 2025.
+- MacOS: ❓ Untested
 
 ## How to develop apps/games and publish them
 This fake console runs on python, so all you have to do is make a TUI or GUI app/game, and upload it onto github or a store i might make in the future, and the user can just run "pyinstall yourapp.py" to install your app as a command onto the system, the command will be the python file name w/o the .py ending.
