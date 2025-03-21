@@ -14,7 +14,7 @@ A Fake gaming console made in python.
 
 - ```pip install -r requirements.txt``` (ON LINUX)
 
-- ```pip install -r requirements-windows.txt``` (ON WINDOWS)
+- ```pip install -r requierments-win.txt``` (ON WINDOWS)
 
 - ```python os.py```
 
