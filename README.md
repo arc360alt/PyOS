@@ -51,3 +51,10 @@ All you have to do is download a game or app from a store i may make in the futu
 - Put downloaded python file into PyOS directory (usaly found in your home directory or users directory on windows)
 - In PyOS, run ```pyinstall APP.PY``` making app.py the name of the app you just moved into the PyOS dir
 - Then run the python files name whithout the .py extention, for example app.py would just become app as a command.
+
+## Images:
+
+![image](https://github.com/user-attachments/assets/0ef61bac-8c88-4cfd-9da8-12a5ea3bedb6)
+![image](https://github.com/user-attachments/assets/6d5826a0-f6d0-4ad6-80dd-66ae7491f452)
+
+
