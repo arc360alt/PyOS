@@ -1,0 +1,23 @@
+[
+    {
+        "name": "weather",
+        "description": "Simple weather app",
+        "file": "weather.py",
+        "url": "https://raw.githubusercontent.com/arc360alt/PyOS-Store/refs/heads/main/downloadables/weather.py",
+        "dependencies": ["rich", "requests", "argparse"]
+    },
+    {
+        "name": "notes",
+        "description": "Simple notes app",
+        "file": "notes.py",
+        "url": "https://raw.githubusercontent.com/arc360alt/PyOS-Store/refs/heads/main/downloadables/note.py",
+        "dependencies": ["curses"]
+    },
+    {
+        "name": "pycraft",
+        "description": "Full on 3D minecraft clone made in python",
+        "file": "pycraft.py",
+        "url": "https://raw.githubusercontent.com/arc360alt/PyOS-Store/refs/heads/main/downloadables/pycraft.py",
+        "dependencies": ["ursina", "perlin_noise", "numpy"]
+    }
+]

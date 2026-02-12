@@ -42,6 +42,8 @@ This fake console runs on python, so all you have to do is make a TUI or GUI app
 - calculator, self explanitory, TUI
 - snake, simple snake game
 - pyinstall, how you install outside apps.
+- pypkg, also helps you install outside apps without having to download them yourself
+- pyremove, removes any installed packages you installed
 
 ## How to use pyinstall
 All you have to do is download a game or app from a store i may make in the future or just any game or app made or not made for this that has a .py extention, drag that .py file into the PyOS directory, then run "pyinstall APPNAME.py" replace APPNAME whith the name of the python file you had just put into the PyOS file, and that will install that app as a command, that command is just the python file name whithout the .py extention, example, tetris.py would become just tetris as a command.

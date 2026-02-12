@@ -54,6 +54,180 @@ def custom_neofetch():
     print("    \033[32m  |     \033[0m")
     print("    \033[32m  |     \033[0m")
 
+def uninstall_package(pkg_name, installed_commands):
+    """Uninstalls a package installed via pyinstall or pypkg."""
+
+    default_commands = ["help", "hello", "about", "exit", "clear", "time", "pyfetch", 
+                        "ollama", "echo", "tetris", "image", "flappybird", "calculator", 
+                        "snake", "pyinstall", "pypkg", "pyremove"]
+
+    if pkg_name in default_commands:
+        print(f"\033[31m  >> '{pkg_name}' is a built-in command and cannot be removed.\033[0m")
+        return
+
+    if pkg_name not in installed_commands:
+        print(f"\033[31m  >> '{pkg_name}' is not an installed command.\033[0m")
+        return
+
+    removed_anything = False
+
+    # Remove the .py script file if it exists in the current directory
+    script_path = os.path.join(os.getcwd(), f"{pkg_name}.py")
+    if os.path.exists(script_path):
+        try:
+            os.remove(script_path)
+            print(f"\033[32m  >> Removed script file '{pkg_name}.py'.\033[0m")
+            removed_anything = True
+        except Exception as e:
+            print(f"\033[31m  >> Could not remove script file: {e}\033[0m")
+
+    # Remove the wrapper command from ~/.local/bin or /usr/local/bin
+    for install_dir in [os.path.expanduser("~/.local/bin"), "/usr/local/bin"]:
+        wrapper_path = os.path.join(install_dir, pkg_name)
+        if os.path.exists(wrapper_path):
+            try:
+                os.remove(wrapper_path)
+                print(f"\033[32m  >> Removed command wrapper from '{install_dir}'.\033[0m")
+                removed_anything = True
+            except Exception as e:
+                print(f"\033[31m  >> Could not remove wrapper from '{install_dir}': {e}\033[0m")
+
+    # Remove from installed_commands list and save
+    installed_commands.remove(pkg_name)
+    save_installed_commands(installed_commands)
+    print(f"\033[32m  >> '{pkg_name}' removed from command list.\033[0m")
+
+    if not removed_anything:
+        print(f"\033[33m  >> No files were found to delete, but '{pkg_name}' has been unregistered.\033[0m")
+
+    print(f"\033[32m  >> '{pkg_name}' uninstalled successfully.\033[0m")
+
+# package manager starts here
+
+import json
+import urllib.request
+
+def run_package_manager(installed_commands):
+    """A simple package manager that installs from packages.json"""
+
+    PACKAGES_FILE = "packages.json"
+
+    def load_packages():
+        if not os.path.exists(PACKAGES_FILE):
+            print("\033[31mError: packages.json not found.\033[0m")
+            return None
+        try:
+            with open(PACKAGES_FILE, "r") as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            print("\033[31mError: packages.json is malformed.\033[0m")
+            return None
+
+    def list_packages(packages):
+        print("\033[36m╔══════════════════════════════════════╗\033[0m")
+        print("\033[36m║        PyOS Package Manager          ║\033[0m")
+        print("\033[36m╚══════════════════════════════════════╝\033[0m")
+        print(f"  {'NAME':<20} {'DESCRIPTION'}")
+        print(f"  {'────':<20} {'───────────'}")
+        for pkg in packages:
+            name = pkg.get("name", "?")
+            desc = pkg.get("description", "No description")
+            print(f"  \033[33m{name:<20}\033[0m {desc}")
+        print()
+
+    def install_package(packages, pkg_name, installed_commands):
+        match = next((p for p in packages if p["name"] == pkg_name), None)
+        if not match:
+            print(f"\033[31mPackage '{pkg_name}' not found. Run 'pypkg list' to see available packages.\033[0m")
+            return
+
+        url = match.get("url")
+        filename = match.get("file", pkg_name + ".py")
+
+        if not url:
+            print(f"\033[31mError: No URL defined for package '{pkg_name}'.\033[0m")
+            return
+
+        # Install pip dependencies first
+        dependencies = match.get("dependencies", [])
+        if dependencies:
+            print(f"\033[36m  >> Installing {len(dependencies)} dependency/dependencies...\033[0m")
+            for dep in dependencies:
+                print(f"\033[36m  >> Installing '{dep}'...\033[0m", end="", flush=True)
+                try:
+                    result = subprocess.run(
+                        [sys.executable, "-m", "pip", "install", dep],
+                        capture_output=True,
+                        text=True
+                    )
+                    if result.returncode == 0:
+                        print(f"\r\033[32m  >> '{dep}' installed.          \033[0m")
+                    else:
+                        print(f"\r\033[31m  >> '{dep}' failed.             \033[0m")
+                        print(f"\033[31m     {result.stderr.splitlines()[-1]}\033[0m")
+                except Exception as e:
+                    print(f"\r\033[31m  >> '{dep}' error: {e}\033[0m")
+            print()
+
+        print(f"\033[36m  >> Fetching '{pkg_name}'...\033[0m")
+
+        try:
+            def progress_hook(count, block_size, total_size):
+                if total_size > 0:
+                    percent = int(count * block_size * 100 / total_size)
+                    percent = min(percent, 100)
+                    bar = ("█" * (percent // 5)).ljust(20)
+                    print(f"\r  \033[32m[{bar}] {percent}%\033[0m", end="", flush=True)
+
+            urllib.request.urlretrieve(url, filename, reporthook=progress_hook)
+            print()  # newline after progress bar
+            print(f"\033[32m  >> '{pkg_name}' installed successfully as '{filename}'.\033[0m")
+
+            # Register the command if it's a .py file
+            cmd_name = filename[:-3] if filename.endswith(".py") else filename
+            if cmd_name not in installed_commands:
+                installed_commands.append(cmd_name)
+                save_installed_commands(installed_commands)
+                print(f"\033[32m  >> Command '{cmd_name}' is now available.\033[0m")
+
+        except Exception as e:
+            print(f"\n\033[31m  >> Failed to install '{pkg_name}': {e}\033[0m")
+
+    # --- Package manager UI loop ---
+    packages = load_packages()
+    if packages is None:
+        return
+
+    print()
+    print("\033[36m  PyOS Package Manager  |  type 'help' for commands, 'exit' to quit\033[0m")
+    print()
+
+    while True:
+        try:
+            cmd = input("\033[35mpypkg>\033[0m ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
+
+        if cmd == "exit" or cmd == "quit":
+            break
+        elif cmd == "help":
+            print("  list              - Show all available packages")
+            print("  install <name>    - Install a package")
+            print("  exit              - Exit the package manager")
+        elif cmd == "list":
+            list_packages(packages)
+        elif cmd.startswith("install "):
+            pkg_name = cmd[8:].strip()
+            if pkg_name:
+                install_package(packages, pkg_name, installed_commands)
+            else:
+                print("  Usage: install <package_name>")
+        elif cmd == "":
+            pass
+        else:
+            print(f"  Unknown command '{cmd}'. Type 'help' for help.")
+
 def run_ollama(command_parts):
     """Runs the 'ollama' command with pexpect or subprocess based on OS."""
     system = platform.system()
@@ -151,7 +325,7 @@ def load_installed_commands():
         with open("installed_commands.txt", "r") as f:
             return [line.strip() for line in f]
     except FileNotFoundError:
-        default_commands = ["help", "hello", "about", "exit", "clear", "time", "pyfetch", "ollama", "echo", "tetris", "image", "flappybird", "calculator", "snake", "pyinstall"]
+        default_commands = ["help", "hello", "about", "exit", "clear", "time", "pyfetch", "ollama", "echo", "tetris", "image", "flappybird", "calculator", "snake", "pyinstall", "pypkg", "pyremove"]
         save_installed_commands(default_commands)
         return default_commands
 
@@ -162,12 +336,11 @@ def save_installed_commands(commands):
             f.write(command + "\n")
 
 def fake_os():
-    """Simulates a fake terminal-based OS with command history."""
 
     os_name = "PyOS Mini Console"
     rainbow_print(os_name + "\n")
-    rainbow_print("version 0.1 beta\n")
-    rainbow_print("https://arc360hub.com (c) 2020-2025\n")
+    rainbow_print("version 0.2 beta\n")
+    rainbow_print("https://arc360hub.com (c) 2020-2026\n")
     rainbow_print("Enter help to get supported commands\n")
     print("\n")
 
@@ -219,6 +392,15 @@ def fake_os():
                 print(f"Available commands: {', '.join(installed_commands)}") #print all commands
             elif command_parts[0] == "hello":
                 print("Hello, user!")
+            elif command_parts[0] == "pyremove":
+                if len(command_parts) == 2:
+                    confirm = input(f"  Are you sure you want to remove '{command_parts[1]}'? (y/n): ").strip().lower()
+                    if confirm == "y":
+                        uninstall_package(command_parts[1], installed_commands)
+                    else:
+                        print("  Uninstall cancelled.")
+                else:
+                    print("  Usage: pyremove <package_name>")
             elif command_parts[0] == "about":
                 print("This is a Fake OS named PyOS made in Python by Arc360 and a tiny bit of gemini helping me get started.")
             elif command_parts[0] == "exit":
@@ -234,6 +416,8 @@ def fake_os():
                 custom_neofetch()
             elif command_parts[0] == "ollama":
                 run_ollama(command_parts)
+            elif command_parts[0] == "pypkg":
+                run_package_manager(installed_commands)
             elif command_parts[0] == "echo":
                 if len(command_parts) > 1:
                     print(" ".join(command_parts[1:]))
