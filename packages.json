@@ -19,5 +19,19 @@
         "file": "pycraft.py",
         "url": "https://raw.githubusercontent.com/arc360alt/PyOS-Store/refs/heads/main/downloadables/pycraft.py",
         "dependencies": ["ursina", "perlin_noise", "numpy"]
+    },
+    {
+        "name": "2048",
+        "description": "the classic 2048 game in your terminal",
+        "file": "2048.py",
+        "url": "https://raw.githubusercontent.com/arc360alt/PyOS-Store/refs/heads/main/downloadables/2048.py",
+        "dependencies": ["curses"]
+    },
+        {
+        "name": "minesweeper",
+        "description": "Minesweeper in your terminal!",
+        "file": "minesweeper.py",
+        "url": "https://raw.githubusercontent.com/arc360alt/PyOS-Store/refs/heads/main/downloadables/minesweeper.py",
+        "dependencies": ["curses"]
     }
 ]

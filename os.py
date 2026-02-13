@@ -25,6 +25,7 @@ def custom_neofetch():
     """Displays custom system information."""
     print("-------------------------")
     print(f"OS: PyOS Mini Console")
+    print(f"Version: 0.3b")
     print(f"Kernel: {platform.version()}")
     print(f"Python: {platform.python_version()}")
     print(f"Username: {os.getlogin()}")
@@ -339,7 +340,7 @@ def fake_os():
 
     os_name = "PyOS Mini Console"
     rainbow_print(os_name + "\n")
-    rainbow_print("version 0.2 beta\n")
+    rainbow_print("version 0.3 beta\n")
     rainbow_print("https://arc360hub.com (c) 2020-2026\n")
     rainbow_print("Enter help to get supported commands\n")
     print("\n")
