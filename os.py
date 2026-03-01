@@ -406,6 +406,7 @@ def fake_os():
                 print("This is a Fake OS named PyOS made in Python by Arc360 and a tiny bit of gemini helping me get started.")
             elif command_parts[0] == "exit":
                 print("Exiting...")
+                os.system('clear')
                 break
             elif command_parts[0] == "clear":
                 print("\033c", end="")
